@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Pico 华容道 - 第19集版</title>
+    <title>元祖Pico 华容道 - 第19集</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,19 +14,22 @@
         </div>
 
         <div id="game-container">
-            <!-- 棋盘边框 -->
+            <!-- 棋盘主体 -->
             <div id="game-board">
-                <!-- 深浅棕色网格背景 -->
-                <div class="grid-overlay"></div>
-                <!-- 方块图层 -->
+                <!-- 由 JS 生成 4x5 棋盘格背景 -->
+                <div id="grid-bg"></div>
+                <!-- 方块层 -->
                 <div id="pieces-layer"></div>
+                <!-- 底部出口门（左右颜色与上方格子对应） -->
+                <div class="exit-gate">
+                    <div class="gate-segment light"></div> <!-- 对应 (1,4) 的浅色 -->
+                    <div class="gate-segment dark"></div>  <!-- 对应 (2,4) 的深色 -->
+                </div>
             </div>
-            <!-- 突出的棕色出口条 -->
-            <div class="exit-gate"></div>
         </div>
 
         <div class="instructions">
-            <p>滑动方块移动。目标：让米歇尔到达底部出口！</p>
+            <p>操作说明：滑动方块移动。目标：送米歇尔逃出下方出口。</p>
         </div>
     </div>
     <script src="script.js"></script>
