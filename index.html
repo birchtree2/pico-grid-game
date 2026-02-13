@@ -12,26 +12,41 @@
             <h1>Pico 华容道</h1>
             <p>出处：元祖迷你动画第19集</p>
         </div>
-
-        <div id="game-container">
-            <!-- 棋盘主体 -->
-            <div id="game-board">
-                <!-- 由 JS 生成 4x5 棋盘格背景 -->
-                <div id="grid-bg"></div>
-                <!-- 方块层 -->
-                <div id="pieces-layer"></div>
-                <!-- 底部出口门（左右颜色与上方格子对应） -->
-                <div class="exit-gate">
-                    <div class="gate-segment light"></div> <!-- 对应 (1,4) 的浅色 -->
-                    <div class="gate-segment dark"></div>  <!-- 对应 (2,4) 的深色 -->
+        <div class="main-layout">
+            <!-- 左侧电梯面板 -->
+            <div id="elevator-panel">
+                <div class="display-screen">
+                    <div id="arrow-matrix" class="matrix"></div> <!-- 箭头点阵 -->
+                    <div id="number-matrix" class="matrix"></div> <!-- 数字点阵 -->
+                </div>
+            </div>
+            <div id="game-container">
+                <!-- 棋盘主体 -->
+                <div id="game-board">
+                    <!-- 由 JS 生成 4x5 棋盘格背景 -->
+                    <div id="grid-bg"></div>
+                    <!-- 方块层 -->
+                    <div id="pieces-layer"></div>
+                    <!-- 底部出口门（左右颜色与上方格子对应） -->
+                    <div class="exit-gate">
+                        <div class="gate-segment light left"></div> <!-- 对应 (1,4) 的浅色 -->
+                        <div class="gate-segment dark right"></div>  <!-- 对应 (2,4) 的深色 -->
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="instructions">
-            <p>操作说明：滑动方块移动。目标：送米歇尔逃出下方出口。</p>
+            <p>操作说明：滑动方块移动。目标：送米歇尔到下方中间的电梯门。</p>
+        </div>
+        <div class="star-me-on-github">
+            <a href="https://github.com/birchtree2/pico-grid-game" target="_blank">GitHub</a>
+        </div>
+        <div class="friend-link">
+            <a href="https://hamzaabamboo.github.io/pazuru-pico/" target="_blank">友情链接: Pico俄罗斯方块</a>
         </div>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html>

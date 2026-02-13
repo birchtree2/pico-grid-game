@@ -9,6 +9,9 @@
     /* 计算长方形格子的宽和高 (4x5) */
     --cell-w: calc(var(--board-size) / 4);
     --cell-h: calc(var(--board-size) / 5);
+
+    --matrix-pixel: 10px;
+    --matrix-gap: 1px;
 }
 
 @media (max-width: 500px) {
@@ -22,11 +25,32 @@ body {
     touch-action: none; overflow: hidden;
 }
 
-.game-wrapper { text-align: center; }
+.game-wrapper {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
 .header h1 { margin: 0; font-size: 24px; color: #ffeb3b; }
 .header p { margin: 5px 0 15px; font-size: 13px; opacity: 0.8; }
 
 #game-container { position: relative; }
+
+.main-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+}
+
+@media (max-width: 720px) {
+    .main-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+}
 
 /* 棋盘主体 */
 #game-board {
@@ -87,20 +111,136 @@ body {
     background-repeat: no-repeat;
 }
 
-/* 突出的出口条：高度与边框厚度对齐 */
+/* 底部出口门动画 */
 .exit-gate {
     position: absolute;
-    bottom: -8px; 
+    bottom: -8px;
     left: calc(var(--cell-w) * 1);
     width: calc(var(--cell-w) * 2);
-    height: 8px; 
-    display: flex;
-    z-index: 5;
+    height: 8px;
+    z-index: 15;
+    overflow: hidden;
+    background: var(--board-border);
 }
 
-.gate-segment { flex: 1; height: 100%; }
-/* 颜色对应上方最后一行格子 (1,4)为浅，(2,4)为深 */
-.gate-segment.light { background-color: var(--brown-light); }
-.gate-segment.dark { background-color: var(--brown-dark); }
+.gate-segment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 52%;
+    transition: transform 0.45s ease;
+}
+
+.gate-segment.light { background-color: var(--brown-dark); }
+.gate-segment.dark { background-color: var(--brown-light); }
+.gate-segment.left { left: 0; transform: translateX(-100%); }
+.gate-segment.right { right: 0; transform: translateX(100%); }
+
+.exit-gate.closed .gate-segment.left,
+.exit-gate.closed .gate-segment.right { transform: translateX(0); }
 
 .instructions { margin-top: 30px; font-size: 13px; opacity: 0.8; }
+
+.star-me-on-github,
+.friend-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(5, 5, 5, 0.35);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    width: fit-content;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.star-me-on-github { background: linear-gradient(120deg, rgba(255, 193, 7, 0.18), rgba(255, 255, 255, 0.05)); }
+.friend-link { background: linear-gradient(120deg, rgba(0, 255, 224, 0.15), rgba(255, 255, 255, 0.05)); }
+
+.star-me-on-github::before,
+.friend-link::before {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.star-me-on-github::before { content: "★"; color: #ffdf6b; }
+.friend-link::before { content: "🤝"; }
+
+.star-me-on-github a,
+.friend-link a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.star-me-on-github:hover,
+.friend-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.45);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+@media (max-width: 500px) {
+    .star-me-on-github,
+    .friend-link {
+        width: 90vw;
+        justify-content: center;
+        padding: 12px 16px;
+        border-radius: 18px;
+    }
+}
+
+/* 电梯面板主体 */
+#elevator-panel {
+    width: 110px;
+    height: calc(var(--board-size) * 0.4);
+    background: #030303;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #030303;
+    border-radius: 12px;
+    gap: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.display-screen {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 点阵屏容器 */
+.matrix {
+    display: grid;
+    gap: var(--matrix-gap);
+}
+#arrow-matrix {
+    grid-template-columns: repeat(5, var(--matrix-pixel));
+    grid-template-rows: repeat(5, var(--matrix-pixel));
+}
+#number-matrix {
+    grid-template-columns: repeat(5, var(--matrix-pixel));
+    grid-template-rows: repeat(7, var(--matrix-pixel));
+}
+
+/* 像素点 */
+.pixel {
+    width: var(--matrix-pixel);
+    height: var(--matrix-pixel);
+    background: #030303; /* 未点亮 */
+    transition: background 0.2s;
+}
+.pixel.on { 
+    background: #ffb700; /* 点亮色 */
+    box-shadow: 0 0 5px #ffb700;
+}

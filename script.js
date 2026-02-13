@@ -14,6 +14,7 @@ const initialLayout = [
 
 const gridBg = document.getElementById('grid-bg');
 const piecesLayer = document.getElementById('pieces-layer');
+const exitGateEl = document.querySelector('.exit-gate');
 let pieces = [];
 let startXY = { x: 0, y: 0 };
 
@@ -101,8 +102,75 @@ function checkWin() {
     const michelle = pieces.find(p => p.id === 'michelle');
     // 米歇尔 (2x2) 的底部到达最后两行中央
     if (michelle.x === 1 && michelle.y === 3) {
-        setTimeout(() => alert('🎉 米歇尔成功到达电梯出口！'), 200);
+        // 步骤3：到达终点变3楼并开门
+        currentFloor = 3;
+        drawPixels('number-matrix', PIXEL_MAPS.nums[3], 5);
+        
+        setTimeout(() => {
+            toggleExitGate(false);
+            alert('3楼到了，米歇尔下电梯！');
+        }, 800);
     }
 }
 
-init();
+// 1. 点阵坐标定义 (x,y)
+const PIXEL_MAPS = {
+    arrow: [[2,0], [1,1], [2,1], [3,1], [0,2], [2,2], [4,2], [2,3], [2,4]],
+    nums: {
+    1: [[2,0], [1,1], [2,1], [2,2], [2,3], [2,4], [2,5], [1,6], [2,6], [3,6]],
+        2: [[1,0], [2,0], [3,0], [0,1], [4,1], [4,2], [3,3], [2,4], [1,5], [0,6], [1,6], [2,6], [3,6], [4,6]],
+        3: [[1,0], [2,0], [3,0], [0,1],[4,1], [4,2], [2,3],[3,3], [4,4], [0,5],[4,5], [1,6], [2,6], [3,6]]
+    }
+};
+
+// 初始化点阵 HTML
+function createMatrix(id, cols, rows) {
+    const container = document.getElementById(id);
+    for (let i = 0; i < cols * rows; i++) {
+        const p = document.createElement('div');
+        p.className = 'pixel';
+        container.appendChild(p);
+    }
+}
+
+// 刷新显示 (核心函数)
+function drawPixels(matrixId, coords, cols) {
+    const pixels = document.getElementById(matrixId).getElementsByClassName('pixel');
+    Array.from(pixels).forEach(p => p.classList.remove('on'));
+    coords.forEach(([x, y]) => {
+        const index = y * cols + x;
+        if (pixels[index]) pixels[index].classList.add('on');
+    });
+}
+
+// 电梯逻辑流程
+let currentFloor = 1;
+
+function startElevator() {
+    createMatrix('arrow-matrix', 5, 5);
+    createMatrix('number-matrix', 5, 7);
+    toggleExitGate(false); // 初始开门
+    // 步骤1：关门 (线变黑)
+    setTimeout(() => {
+        toggleExitGate(true);
+        drawPixels('arrow-matrix', PIXEL_MAPS.arrow, 5);
+        drawPixels('number-matrix', PIXEL_MAPS.nums[1], 5);
+    }, 1500);
+
+    // 步骤2：5秒后自动变2楼
+    setTimeout(() => {
+        currentFloor = 2;
+        drawPixels('number-matrix', PIXEL_MAPS.nums[2], 5);
+    }, 20000);
+}
+
+function toggleExitGate(shouldClose) {
+    if (!exitGateEl) return;
+    exitGateEl.classList.toggle('closed', !shouldClose);
+}
+
+// 在页面加载后启动
+window.onload = () => {
+    init(); // 原有的棋盘初始化
+    startElevator(); // 启动电梯效果
+};
